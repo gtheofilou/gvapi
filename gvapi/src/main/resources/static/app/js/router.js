@@ -5,6 +5,7 @@
 		window.addEventListener("hashchange", function() {
 			route();
 	    });
+		route();
 	}
 	
 	//Routing
