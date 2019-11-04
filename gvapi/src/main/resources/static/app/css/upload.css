@@ -1,3 +1,13 @@
 #upload .dm-uploader {
 	border: 0.25rem dashed #A5A5C7;
 }
+
+#upload .preview-img {
+    width: 64px;
+    height: 64px;
+}
+
+#upload .file-list {
+	max-height: 415px;
+	overflow-y: auto; 
+}

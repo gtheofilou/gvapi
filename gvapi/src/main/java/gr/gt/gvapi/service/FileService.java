@@ -1,16 +1,20 @@
 package gr.gt.gvapi.service;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +30,6 @@ public class FileService extends AbstractService<File, Long> {
 	
 	private Path fileLocation;
 	
-	@SuppressWarnings("unused")
 	private FileDao fileDao;
 	
 	@Autowired
@@ -54,5 +57,23 @@ public class FileService extends AbstractService<File, Long> {
 		file.setName(fileName);
 		persist(file);
 		
+	}
+	
+	public Resource loadFile(String fileName) {
+		try {
+            Path filePath = fileLocation.resolve(fileName).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+            if(resource.exists()) {
+                return resource;
+            } else {
+                throw new IllegalArgumentException("File not found " + fileName);
+            }
+        } catch (MalformedURLException ex) {
+            throw new IllegalArgumentException("File not found " + fileName, ex);
+        }
+	}
+	
+	public List<File> getFileList() {
+		return fileDao.getFileList();
 	}
 }
