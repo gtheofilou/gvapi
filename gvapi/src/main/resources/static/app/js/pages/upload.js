@@ -36,17 +36,14 @@
 	}
 	
 	var load = function() {
-		
 		$.ajax({
 		      type: 'GET',
 		      url: "/file/getFileList",
 		      success: function(data) {
-		    	  console.log(data);
+//		    	  console.log(data);
 		    	  loadFileRows(data);
 		      }
 		});
-		
-		
 	}
 	
 	var startUploader = function() {
@@ -64,13 +61,15 @@
   		  },
   		  onUploadSuccess: function(id, data){
   			  updateStatus('success', 'Upload Complete');
+  			  $('#cr' + id).attr('gvapi-id', 'gvapi' + data.id);
+  			  $('#button' + id).attr('id', 'button' + data.id).attr('btn-orgin', data.id);
   			  updateProgressBar(100, false);
   		  },
   		  onUploadError: function(id, xhr, status, message){
   			  updateStatus('danger', xhr.responseJSON.error);
   			  updateProgressBar(0, false);
   		  },
-  		 onNewFile: function(id, file){
+  		  onNewFile: function(id, file){
   			 var row = createFileRow(id, file);
   			 $('#files').find('li.empty').fadeOut();
   		     $('#files').prepend(row);
@@ -110,6 +109,14 @@
 		var image = $("<img>").addClass("mr-3 mb-2 preview-img").attr("src", id);
 		var info = $("<div>").addClass("media-body mb-1").append($("<p>").addClass("mb-2").append($("<strong>").text(file.name)));
 		
+		var rowData = {
+				id : id,
+				name : file.name,
+				sent : false,
+		}
+		var controls = $("<div>").addClass("mb-2").append(createControls(rowData));
+		
+		info.append(controls);
 		row.append(image).append(info);
 		return row;
 	}
@@ -117,14 +124,50 @@
 	var loadFileRows = function(data) {
 		if(data.length > 1) $('#files').find('li.empty').fadeOut();
 		for (i = 0; i < data.length; i++) {
-			var row = $("<li>").addClass("media").attr("id", "lo" + data[i].id);
+			var row = $("<li>").addClass("media").attr("id", "lo" + data[i].id).attr('gvapi-id', 'gvapi' + data[i].id);
 			var image = $("<img>").addClass("mr-3 mb-2 preview-img").attr("src", "/file/download/" + data[i].name);
 			var info = $("<div>").addClass("media-body mb-1").append($("<p>").addClass("mb-2").append($("<strong>").text(data[i].name)));
+			var controls = $("<div>").addClass("mb-2").append(createControls(data[i]));
+			
+			info.append(controls);
 			row.append(image).append(info);
 			
   		    $('#files').prepend(row);
 		}
+	}
+	
+	var createControls = function(row) {
+		var btn = $("<button>").attr('id', 'button' + row.id).attr('btn-orgin', row.id).attr('type', 'button').addClass('btn btn-sm')
+			.attr('data-loading-text', "<i class='fa fa-spinner fa-spin'></i> Sending...");
 		
+		if(row.sent == true) btn.addClass('btn-success').attr("disabled", true).text('Sent');
+		else btn.addClass('btn-primary').text('Send')
+		
+		var getId = function() {
+			return function() {
+				return btn.attr('btn-orgin');
+			}
+		}();
+		
+		btn.on('click', function() {
+				$this = $(this);
+				$this.html($this.attr('data-loading-text'));
+				
+				var imgId = getId();
+				$.ajax({
+				      type: 'POST',
+				      url: "/googleapi/send",
+				      dataType : "json",
+				      contentType: "application/json; charset=utf-8",
+				      data: JSON.stringify({ id: imgId }),
+				      success: function(data) {
+				    	  console.log(data);
+				    	  $this.text('Sent').removeClass('btn-primary').addClass('btn-success').attr("disabled", true);;
+				      }
+				});
+			});
+		
+		return btn;
 	}
 	
 	$.gvapi ? null: $.gvapi = {};

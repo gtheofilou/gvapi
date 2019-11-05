@@ -14,6 +14,8 @@ public class File {
 	
 	@NotNull
 	private String name;
+	
+	private Boolean sent;
 
 	public Long getId() {
 		return id;
@@ -30,6 +32,13 @@ public class File {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
+	public Boolean getSent() {
+		return sent;
+	}
+
+	public void setSent(Boolean sent) {
+		this.sent = sent;
+	}
 	
 }

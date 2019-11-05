@@ -47,7 +47,7 @@ public class FileService extends AbstractService<File, Long> {
 				 .toAbsolutePath().normalize();
 	}
 	
-	public void saveFile(MultipartFile inputFile) throws IOException {
+	public File saveFile(MultipartFile inputFile) throws IOException {
 		
 		String fileName = StringUtils.cleanPath(inputFile.getOriginalFilename());
 		Path targetLocation = fileLocation.resolve(fileName);
@@ -57,6 +57,7 @@ public class FileService extends AbstractService<File, Long> {
 		file.setName(fileName);
 		persist(file);
 		
+		return file;
 	}
 	
 	public Resource loadFile(String fileName) {

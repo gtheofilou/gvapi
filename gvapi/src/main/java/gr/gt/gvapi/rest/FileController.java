@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import gr.gt.gvapi.dto.FileDto;
 import gr.gt.gvapi.entity.File;
 import gr.gt.gvapi.service.FileService;
 
@@ -29,8 +30,8 @@ public class FileController {
 
 	@PostMapping("/upload")
 	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile inputFile) throws IOException {
-		fileService.saveFile(inputFile);
-		return ResponseEntity.ok().build();
+		File file = fileService.saveFile(inputFile);
+		return ResponseEntity.ok().body(new FileDto(file.getId(), file.getName(), file.getSent()));
 	}
 	
 	@GetMapping("/download/{fileName:.+}")
