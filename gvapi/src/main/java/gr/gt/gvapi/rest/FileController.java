@@ -3,8 +3,6 @@ package gr.gt.gvapi.rest;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -35,7 +33,7 @@ public class FileController {
 	}
 	
 	@GetMapping("/download/{fileName:.+}")
-	public ResponseEntity<?> downLoadFile(@PathVariable String fileName, HttpServletRequest request) {
+	public ResponseEntity<?> downLoadFile(@PathVariable String fileName) {
 		Resource resource = fileService.loadFile(fileName);
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
 	}

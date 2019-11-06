@@ -10,18 +10,17 @@ import org.springframework.stereotype.Repository;
 
 import gr.gt.gvapi.entity.File;
 
-
 @Repository("FileDao")
 public class FileDao extends AbstractDao<File, Long> {
-	
+
+	@SuppressWarnings("unused")
 	public List<File> getFileList() {
 
 		CriteriaBuilder c = entityManager.getCriteriaBuilder();
 		CriteriaQuery<File> q = c.createQuery(File.class);
 		Root<File> r = q.from(File.class);
-		
+
 		return entityManager.createQuery(q).getResultList();
 	}
-	
-	
+
 }

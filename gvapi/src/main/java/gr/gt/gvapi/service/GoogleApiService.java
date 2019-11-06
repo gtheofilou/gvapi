@@ -50,39 +50,27 @@ public class GoogleApiService {
 	}
 	
 	public File sendToGoogle(GoogleApiDto googleApiDto) throws MalformedURLException {
-		
+
 		File file = fileDao.find(googleApiDto.getId());
-		
+
 		Path filePath = fileLocation.resolve(file.getName()).normalize();
-        Resource resource = new UrlResource(filePath.toUri());
-		
-		AnnotateImageResponse response = this.cloudVisionTemplate.analyzeImage(
-				resource, Type.LABEL_DETECTION);
+		Resource resource = new UrlResource(filePath.toUri());
 
-//		    Map<String, Float> imageLabels =
-//		        response.getLabelAnnotationsList()
-//		            .stream()
-//		            .collect(
-//		                Collectors.toMap(
-//		                    EntityAnnotation::getDescription,
-//		                    EntityAnnotation::getScore,
-//		                    (u, v) -> {
-//		                      throw new IllegalStateException(String.format("Duplicate key %s", u));
-//		                    },
-//		                    LinkedHashMap::new));
-		    
-		    List<GoogleResponse> googleResponseList = response.getLabelAnnotationsList()
-		    											.stream().map(e -> new GoogleResponse(googleApiDto.getId(), e.getDescription(), e.getScore()))
-		    											.distinct().collect(Collectors.toList());
-		    
-		    for(GoogleResponse g: googleResponseList) {
-		    	googleResponseDao.persist(g);
-		    }
-		    //[END spring_vision_image_labelling]
+		AnnotateImageResponse response = this.cloudVisionTemplate.analyzeImage(resource, Type.LABEL_DETECTION);
 
-//		MapUtils.debugPrint(System.out, "imageLabels", imageLabels);
-		
+		List<GoogleResponse> googleResponseList = response.getLabelAnnotationsList().stream()
+				.map(e -> new GoogleResponse(googleApiDto.getId(), e.getDescription(), e.getScore())).distinct()
+				.collect(Collectors.toList());
+
+		for (GoogleResponse g : googleResponseList) {
+			googleResponseDao.persist(g);
+		}
+
 		file.setSent(Boolean.TRUE);
 		return file;
+	}
+	
+	public List<GoogleResponse> getGoogleResponse(Long fileId) {
+		return googleResponseDao.getGoogleResponse(fileId);
 	}
 }

@@ -40,7 +40,6 @@
 		      type: 'GET',
 		      url: "/file/getFileList",
 		      success: function(data) {
-//		    	  console.log(data);
 		    	  loadFileRows(data);
 		      }
 		});
@@ -137,8 +136,11 @@
 	}
 	
 	var createControls = function(row) {
+		
+		var container = $("<div>");
 		var btn = $("<button>").attr('id', 'button' + row.id).attr('btn-orgin', row.id).attr('type', 'button').addClass('btn btn-sm')
 			.attr('data-loading-text', "<i class='fa fa-spinner fa-spin'></i> Sending...");
+		container.append(btn);
 		
 		if(row.sent == true) btn.addClass('btn-success').attr("disabled", true).text('Sent');
 		else btn.addClass('btn-primary').text('Send')
@@ -161,13 +163,46 @@
 				      contentType: "application/json; charset=utf-8",
 				      data: JSON.stringify({ id: imgId }),
 				      success: function(data) {
-				    	  console.log(data);
-				    	  $this.text('Sent').removeClass('btn-primary').addClass('btn-success').attr("disabled", true);;
+				    	  $this.text('Sent').removeClass('btn-primary').addClass('btn-success').attr("disabled", true);
+				    	  showbtn.attr("disabled", false).addClass("btn-info");
 				      }
 				});
 			});
 		
-		return btn;
+		var showbtn = $("<button>").attr('id', 'button-show' + row.id).attr('btn-orgin', row.id).attr('type', 'button').attr('data-toggle', 'modal')
+			.attr('data-target', '#gvModal').addClass('btn btn-sm btn-info ml-2').text('Show');
+		container.append(showbtn);
+		
+		if(row.sent != true) showbtn.attr("disabled", true).removeClass("btn-info");
+		showbtn.on('click', function() {
+			var modal = $("#gvModal");
+			var content = $("#gvModal .modal-body").empty();
+			var title = $("#gvModal .modal-title");
+			title.text('Google Response');
+			var tbl = $("<table>").addClass('display').css("width", "100%");
+			content.append(tbl);
+			$.ajax({
+			      type: 'GET',
+			      url: "/googleapi/get/" + getId(),
+			      dataType : "json",
+			      contentType: "application/json; charset=utf-8",
+			      success: function(data) {
+			    	  tbl.DataTable({
+			    		  	searching: false,
+			    		    ordering:  false,
+			    		    lengthChange: false,
+			                data: data,
+			                columns: [
+			                    { data: 'description', title: 'Description'},
+			                    { data: 'score', title: 'Score'},
+			                ]
+			            });
+			    	  modal.modal();
+			      }
+			});
+		});
+		
+		return container;
 	}
 	
 	$.gvapi ? null: $.gvapi = {};

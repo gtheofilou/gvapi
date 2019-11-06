@@ -4,11 +4,15 @@
 	<!-- CSS -->
     <link href="webjars/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="webjars/github-com-danielm-uploader/v1.0.2/src/css/jquery.dm-uploader.css" rel="stylesheet">
+    <link href="webjars/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+    <link href="webjars/datatables/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="app/css/upload.css" rel="stylesheet">
 	<!-- JS -->
     <script src="webjars/jquery/3.4.1/jquery.min.js"></script>
     <script src="webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="webjars/github-com-danielm-uploader/v1.0.2/src/js/jquery.dm-uploader.js"></script>
+    <script src="webjars/font-awesome/5.11.2/js/all.min.js"></script>
+    <script src="webjars/datatables/1.10.20/js/jquery.dataTables.min.js"></script>
     
     <script src="app/js/init.js"></script>
     <script src="app/js/router.js"></script>
@@ -37,6 +41,21 @@
 			</ul>
 		</div>
 	</nav>
+
+	<div id="gvModal" class="modal fade" tabindex="-1" role="dialog" >
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title"></h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body"></div>
+			</div>
+		</div>
+	</div>
 
 	<!-- CONTENT -->
 	<div class="container">

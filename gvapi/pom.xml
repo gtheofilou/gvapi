@@ -67,6 +67,18 @@
 			<artifactId>github-com-danielm-uploader</artifactId>
 			<version>v1.0.2</version>
 		</dependency>
+		
+		<dependency>
+   			<groupId>org.webjars</groupId>
+   			<artifactId>font-awesome</artifactId>
+    		<version>5.11.2</version>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.webjars</groupId>
+    		<artifactId>datatables</artifactId>
+    		<version>1.10.20</version>
+		</dependency>
 
 		<!-- [START spring_vision_dependency_fragment] -->
 		<dependency>

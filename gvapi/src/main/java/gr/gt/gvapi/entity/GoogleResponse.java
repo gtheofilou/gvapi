@@ -26,6 +26,8 @@ public class GoogleResponse {
 	@NotNull
 	private Float score;
 
+	public GoogleResponse() {}
+
 	public GoogleResponse(@NotNull Long fileId, @NotNull String description, @NotNull Float score) {
 		super();
 		this.fileId = fileId;
