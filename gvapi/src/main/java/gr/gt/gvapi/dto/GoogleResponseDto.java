@@ -1,30 +1,42 @@
 package gr.gt.gvapi.dto;
 
+import gr.gt.gvapi.entity.GoogleResponse.Type;
+
 public class GoogleResponseDto {
-	
-	private String description;
-	private Float score;
-	
-	public GoogleResponseDto(String description, Float score) {
-		super();
-		this.description = description;
-		this.score = score;
-	}
 
-	public String getDescription() {
-		return description;
-	}
+    private Type type;
+    private String description;
+    private Float score;
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public GoogleResponseDto(Type type, String description, Float score) {
+        super();
+        this.type = type;
+        this.description = description;
+        this.score = score;
+    }
 
-	public Float getScore() {
-		return score;
-	}
+    public Type getType() {
+        return type;
+    }
 
-	public void setScore(Float score) {
-		this.score = score;
-	}
-	
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Float getScore() {
+        return score;
+    }
+
+    public void setScore(Float score) {
+        this.score = score;
+    }
+
 }

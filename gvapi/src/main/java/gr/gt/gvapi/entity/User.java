@@ -8,8 +8,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "File", indexes = @Index(columnList = "name"))
-public class File {
+@Table(name = "User", indexes = @Index(columnList = "name"))
+public class User {
 
     @Id
     @GeneratedValue
@@ -18,7 +18,6 @@ public class File {
     @NotNull
     private String name;
 
-    private Boolean sent;
 
     public Long getId() {
         return id;
@@ -34,14 +33,6 @@ public class File {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Boolean getSent() {
-        return sent;
-    }
-
-    public void setSent(Boolean sent) {
-        this.sent = sent;
     }
 
 }

@@ -1,5 +1,6 @@
 package gr.gt.gvapi.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -8,63 +9,79 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(	name = "GoogleResponse",
-	indexes = @Index(columnList = "fileId")
-)
+@Table(name = "GoogleResponse", indexes = @Index(columnList = "fileId"))
 public class GoogleResponse {
 
-	@Id
-	@GeneratedValue
-	private Long id;
-	
-	@NotNull
-	private Long fileId;
-	
-	@NotNull
-	private String description;
-	
-	@NotNull
-	private Float score;
+    public enum Type {
+        LABEL, OCR,
+    }
 
-	public GoogleResponse() {}
+    @Id
+    @GeneratedValue
+    private Long id;
 
-	public GoogleResponse(@NotNull Long fileId, @NotNull String description, @NotNull Float score) {
-		super();
-		this.fileId = fileId;
-		this.description = description;
-		this.score = score;
-	}
+    @NotNull
+    private Long fileId;
 
-	public Long getId() {
-		return id;
-	}
+    @NotNull
+    private Type type;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @NotNull
+    @Column(length = 10000)
+    private String description;
 
-	public Long getFileId() {
-		return fileId;
-	}
+    @NotNull
+    private Float score;
 
-	public void setFileId(Long fileId) {
-		this.fileId = fileId;
-	}
+    public GoogleResponse() {}
 
-	public String getDescription() {
-		return description;
-	}
+    public GoogleResponse(@NotNull Long fileId, @NotNull Type type, @NotNull String description,
+            @NotNull Float score) {
+        super();
+        this.fileId = fileId;
+        this.type = type;
+        this.description = description;
+        this.score = score;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public Float getScore() {
-		return score;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setScore(Float score) {
-		this.score = score;
-	}
+    public Long getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(Long fileId) {
+        this.fileId = fileId;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Float getScore() {
+        return score;
+    }
+
+    public void setScore(Float score) {
+        this.score = score;
+    }
 
 }

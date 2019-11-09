@@ -1,16 +1,20 @@
 package gr.gt.gvapi.dto;
 
+import java.util.List;
+
 public class GoogleApiDto {
 
-	private Long id;
 
-	public GoogleApiDto() {}
+    private List<Long> idList;
 
-	public Long getId() {
-		return id;
-	}
+    public GoogleApiDto() {}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public List<Long> getIdList() {
+        return idList;
+    }
+
+    public void setIdList(List<Long> idList) {
+        this.idList = idList;
+    }
+
 }

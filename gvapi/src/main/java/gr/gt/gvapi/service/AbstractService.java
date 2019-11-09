@@ -11,32 +11,32 @@ import gr.gt.gvapi.dao.AbstractDao;
 
 @Service
 @Transactional
-public abstract class AbstractService <T, PK extends Serializable> {
-	
-	private AbstractDao<T, PK> abstractDao;
-	
-	public AbstractService(AbstractDao<T, PK> abstractDao) {
-		this.abstractDao = abstractDao;
-	}
+public abstract class AbstractService<T, PK extends Serializable> {
 
-	public T find(PK id) {
-		return (T) abstractDao.find(id);
-	}
+    private AbstractDao<T, PK> abstractDao;
 
-	public List<T> findAll() {
-		return abstractDao.findAll();
-	}
+    public AbstractService(AbstractDao<T, PK> abstractDao) {
+        this.abstractDao = abstractDao;
+    }
 
-	public void persist(T entity) {
-		abstractDao.persist(entity);
-	}
+    public T find(PK id) {
+        return (T) abstractDao.find(id);
+    }
 
-	public void merge (T entity) {
-		abstractDao.merge(entity);
-	}
+    public List<T> findAll() {
+        return abstractDao.findAll();
+    }
 
-	public void delete(T entity) {
-		abstractDao.delete(entity);
-	}
+    public void persist(T entity) {
+        abstractDao.persist(entity);
+    }
+
+    public void merge(T entity) {
+        abstractDao.merge(entity);
+    }
+
+    public void delete(T entity) {
+        abstractDao.delete(entity);
+    }
 
 }

@@ -11,3 +11,7 @@
 	max-height: 415px;
 	overflow-y: auto; 
 }
+
+#upload #user-dropdown {
+	width: 100%;
+}

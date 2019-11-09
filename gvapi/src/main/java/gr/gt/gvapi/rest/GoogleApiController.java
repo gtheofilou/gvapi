@@ -1,6 +1,7 @@
 package gr.gt.gvapi.rest;
 
 import java.net.MalformedURLException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,20 +23,25 @@ import gr.gt.gvapi.service.GoogleApiService;
 @RestController
 @RequestMapping(path = "/googleapi")
 public class GoogleApiController {
-	
-	@Autowired
-	private GoogleApiService googleApiService;
-	
-	@PostMapping(value="/send", produces=MediaType.APPLICATION_JSON_VALUE, consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> send(@RequestBody GoogleApiDto googleApiDto) throws MalformedURLException {
-		File file = googleApiService.sendToGoogle(googleApiDto);
-		return ResponseEntity.ok().body(new FileDto(file.getId(), file.getName(), file.getSent()));
-	}
-	
-	@GetMapping(value="/get/{fileId:.+}", produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getGoogleResponse(@PathVariable Long fileId) {
-		return ResponseEntity.ok().body(googleApiService.getGoogleResponse(fileId).stream()
-				.map(x-> new GoogleResponseDto(x.getDescription(), x.getScore())).collect(Collectors.toList()));
-	}
+
+    @Autowired
+    private GoogleApiService googleApiService;
+
+    @PostMapping(value = "/send", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> send(@RequestBody GoogleApiDto googleApiDto)
+            throws MalformedURLException {
+        List<File> fileList = googleApiService.sendListToGoogle(googleApiDto);
+        return ResponseEntity.ok()
+                .body(fileList.stream().map(x -> new FileDto(x.getId(), x.getName(), x.getSent())));
+    }
+
+    @GetMapping(value = "/get/{fileId:.+}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getGoogleResponse(@PathVariable Long fileId) {
+        return ResponseEntity.ok()
+                .body(googleApiService.getGoogleResponse(fileId).stream().map(
+                        x -> new GoogleResponseDto(x.getType(), x.getDescription(), x.getScore()))
+                        .collect(Collectors.groupingBy(GoogleResponseDto::getType)));
+    }
 
 }
