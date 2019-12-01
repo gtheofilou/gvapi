@@ -115,6 +115,7 @@ public class FileService extends AbstractService<File, Long> {
             if (file == null)
                 urlsToProcess.add(new ImmutablePair<String, String>(tmp, filename));
             else {// File already exist, just add association
+                System.out.println("File already exist, just add association");
                 fileUserAsscoDao.createFileUserAssocIfNotExists(file.getId(), user.getId());
             }
         }
