@@ -54,7 +54,8 @@ public class Statistics {
             + ")";
 
     public static final String LABELS_BY_AVG_PER_USER = ""//
-            + "select u.name, g.description, avg(g.score) as avg_score "//
+            + "select u.name, g.description, avg(g.score) as avg_score, "
+            + "sum(g.score) as sum_score, count(g.description) as cnt "//
             + "from user u "//
             + "join FILE_USER_ASSOC fua on fua.user_id = u.id "//
             + "join GOOGLE_RESPONSE g on g.file_id = fua.file_id "//

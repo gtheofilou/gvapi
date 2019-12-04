@@ -81,19 +81,29 @@
 		      success: function(data) {
 		    	  console.log(data);
 		    	  
-		    	  if(plot=='cloud') plotCloud(data);
+		    	  if(plot=='cloud') plotCloud(data, type);
 		    	  else if(plot=='histogram') plotHistogram(data);
 		      }
 		});
 		
 	}
+	//Sum(weights) * log10(1+N)
+	var calculateMetric = function(array) {
+		return array[3] * Math.log10(1 + array[4]);
+	}
 	
-	var plotCloud = function(data) {
+	var plotCloud = function(data, type) {
 		var parsedData= [];
   		
+		if(type=='avg') {//use Gerasimos metric
+			for(var i=0; i<data.length; i++) {
+				parsedData.push({text:data[i][1], weight:calculateMetric(data[i])})
+			 }
+		}else {
 		  for(var i=0; i<data.length; i++) {
 			parsedData.push({text:data[i][1], weight:data[i][2]})
 		  }
+		}
 		  $('#graph div').empty();
 	      $('#graph div').jQCloud(parsedData, {
 			  width: 500,
