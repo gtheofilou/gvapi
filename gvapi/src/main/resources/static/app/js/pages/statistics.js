@@ -82,7 +82,7 @@
 		    	  console.log(data);
 		    	  
 		    	  if(plot=='cloud') plotCloud(data, type);
-		    	  else if(plot=='histogram') plotHistogram(data);
+		    	  else if(plot=='histogram') plotHistogram(data, type);
 		      }
 		});
 		
@@ -111,13 +111,21 @@
 		  });
 	}
 	
-	var plotHistogram = function(data) {
+	var plotHistogram = function(data, type) {
 		var x = [];
 		var y = [];
 		
-		for(var i=0; i<data.length; i++) {
-			x.push(data[i][1]);
-			y.push(data[i][2]);
+		
+		if(type=='avg') {
+			for(var i=0; i<data.length; i++) {
+				x.push(data[i][1]);
+				y.push(calculateMetric(data[i]));
+			}
+		}else {
+			for(var i=0; i<data.length; i++) {
+				x.push(data[i][1]);
+				y.push(data[i][2]);
+			}
 		}
 		
 		var data = [
