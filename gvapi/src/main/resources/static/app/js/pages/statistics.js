@@ -118,8 +118,14 @@
 		
 		if(type=='avg') {
 			for(var i=0; i<data.length; i++) {
+				data[i].push(calculateMetric(data[i]))
+			}
+			
+			data.sort(function(a, b){return b[5] - a[5]});
+			
+			for(var i=0; i<data.length; i++) {
 				x.push(data[i][1]);
-				y.push(calculateMetric(data[i]));
+				y.push(data[i][5]);
 			}
 		}else {
 			for(var i=0; i<data.length; i++) {
