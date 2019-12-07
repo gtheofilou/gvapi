@@ -104,7 +104,7 @@
 			parsedData.push({text:data[i][1], weight:data[i][2]})
 		  }
 		}
-		  $('#graph div').empty();
+		  $('#graph div').empty().removeAttr( 'style' );
 	      $('#graph div').jQCloud(parsedData, {
 			  width: 500,
 			  height: 350
@@ -136,7 +136,7 @@
 			  }
 			];
 
-		$('#graph div').empty();
+		$('#graph div').empty().removeAttr( 'style' );;
 		Plotly.newPlot($('#graph div')[0], data);
 	}
 	
