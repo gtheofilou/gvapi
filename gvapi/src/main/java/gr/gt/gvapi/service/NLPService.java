@@ -68,8 +68,10 @@ public class NLPService {
                 String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
                 word = word.toLowerCase();
 
-                if (pos.startsWith("NN")) { // NN, NNP
-                    pos = "NN";
+                // https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html
+                if (pos.startsWith("NN") || pos.startsWith("JJ") || pos.startsWith("VB")
+                        || pos.startsWith("RB")) {
+                    pos = pos.substring(0, 2);
                     String h = word2pos.get(word);
                     if (StringUtils.isEmpty(h))
                         word2pos.put(word, pos);

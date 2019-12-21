@@ -65,4 +65,41 @@ public class Statistics {
             + "order by avg_score DESC "//
             + "LIMIT :limit";
 
+
+
+    public static final String OCR_TF = ""//
+            + "WITH IDF AS ( "//
+            + "SELECT word, count(1) as count "//
+            + "FROM NLP "//
+            + "GROUP BY word "//
+            + ")"//
+            + "SELECT nlp.*, idf.count, u.name "//
+            + "FROM NLP nlp "//
+            + "JOIN IDF idf ON nlp.word = idf.word "//
+            + "JOIN FILE_USER_ASSOC fua on fua.file_id= nlp.file_id "//
+            + "JOIN USER u on u.id=fua.user_id "//
+            + "WHERE u.name = :user "//
+            + "ORDER by tf DESC "//
+            + "LIMIT :limit";
+
+    public static final String OCR_TFIDF = ""//
+            + "WITH IDF AS ( "//
+            + "SELECT word, count(1) as count "//
+            + "FROM NLP "//
+            + "GROUP BY word "//
+            + "),"//
+            + "TD AS ( "//
+            + "SELECT count(distinct file_id) as count "//
+            + "FROM NLP "//
+            + ")"//
+            + "SELECT nlp.*, idf.count, u.name, LOG(docs.count/idf.count) as ord "//
+            + "FROM NLP nlp, TD docs "//
+            + "JOIN IDF idf ON nlp.word = idf.word "//
+            + "JOIN FILE_USER_ASSOC fua on fua.file_id= nlp.file_id "//
+            + "JOIN USER u on u.id=fua.user_id "//
+            + "WHERE u.name = :user "//
+            + "ORDER by ord DESC "//
+            + "LIMIT :limit";
+
+
 }

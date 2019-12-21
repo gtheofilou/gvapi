@@ -13,7 +13,7 @@ public class StatisticsService {
     @Autowired
     private StatisticsDao statisticsDao;
 
-    public List<?> mostRecentPerUser(String user, String type, Integer limit) {
-        return statisticsDao.mostRecentPerUser(user, type, limit);
+    public List<?> mostRecentPerUser(String user, String dataSource, String type, Integer limit) {
+        return statisticsDao.mostRecentPerUser(user, dataSource, type, limit);
     }
 }

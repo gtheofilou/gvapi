@@ -19,8 +19,9 @@ public class StatisticsController {
 
     @GetMapping(value = "/mostRecentPerUser", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<?>> mostRecentPerUser(@RequestParam("user") String user,
-            @RequestParam("type") String type,
+            @RequestParam("dataSource") String dataSource, @RequestParam("type") String type,
             @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
-        return ResponseEntity.ok().body(statisticsService.mostRecentPerUser(user, type, limit));
+        return ResponseEntity.ok()
+                .body(statisticsService.mostRecentPerUser(user, dataSource, type, limit));
     }
 }

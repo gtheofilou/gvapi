@@ -6,19 +6,25 @@
 		
 		var controls = $("<div>").addClass("col-md-12 col-sm-12 input-group");
 		
-		$("<div>").addClass("mt-5 col-md-3 col-sm-12")
+		$("<div>").addClass("mt-5 col-md-2 col-sm-12")
     		.append($("<label>").attr("for", "user-dropdown").text("User"))
     		.append($("<select>").addClass("chosen-select form-control")
     		.attr("id", "st-user-dropdown").attr("data-placeholder", "Choose User"))
     		.appendTo(controls);
 		
-		$("<div>").addClass("mt-5 col-md-3 col-sm-12")
+		$("<div>").addClass("mt-5 col-md-2 col-sm-12")
+			.append($("<label>").attr("for", "data-dropdown").text("Data"))
+			.append($("<select>").addClass("chosen-select form-control")
+			.attr("id", "st-data-dropdown").attr("data-placeholder", "Choose Data source"))
+			.appendTo(controls);
+		
+		$("<div>").addClass("mt-5 col-md-2 col-sm-12")
 			.append($("<label>").attr("for", "user-dropdown").text("Plot"))
 			.append($("<select>").addClass("chosen-select form-control")
 			.attr("id", "st-plot-dropdown").attr("data-placeholder", "Choose Plot"))
 			.appendTo(controls);
 		
-		$("<div>").addClass("mt-5 col-md-3 col-sm-12")
+		$("<div>").addClass("mt-5 col-md-2 col-sm-12")
 			.append($("<label>").attr("for", "user-dropdown").text("Type"))
 			.append($("<select>").addClass("chosen-select form-control")
 			.attr("id", "st-type-dropdown").attr("data-placeholder", "Choose Type"))
@@ -59,30 +65,35 @@
 	
 	var extraInit = function() {
 		
+		addData();
 		addPlots();
 		addTypes();
 		
-		$("#st-user-dropdown").add("#st-plot-dropdown").add("#st-type-dropdown").on('change', function(e) {
-			if(!!$("#st-user-dropdown").val() && !!$("#st-plot-dropdown").val() && !!$("#st-type-dropdown").val()) {
+		$("#st-user-dropdown").add("#st-data-dropdown").add("#st-plot-dropdown").add("#st-type-dropdown").on('change', function(e) {
+			if(!!$("#st-user-dropdown").val() && !!$("#st-data-dropdown").val() && !!$("#st-plot-dropdown").val() && !!$("#st-type-dropdown").val()) {
 				$("#show-button").attr("disabled", false);
 			}
 		});
 		
+		$("#st-data-dropdown").on('change', function(e) {
+			addTypes($("#st-data-dropdown").val());
+		});
+		
 		$("#show-button").on('click', function() {
-			plot($("#st-user-dropdown").val(), $("#st-plot-dropdown").val(), $("#st-type-dropdown").val());
+			plot($("#st-user-dropdown").val(), $("#st-data-dropdown").val(), $("#st-plot-dropdown").val(), $("#st-type-dropdown").val());
 		});
 	}
 	
-	var plot = function(user, plot, type) {
+	var plot = function(user, dataSource, plot, type) {
 		$.ajax({
 		      type: 'GET',
-		      data:{user: user, type:type, limit: 100},
+		      data:{user: user, dataSource: dataSource, type: type, limit: 100},
 		      url: "/statistics/mostRecentPerUser",
 		      success: function(data) {
 		    	  console.log(data);
 		    	  
-		    	  if(plot=='cloud') plotCloud(data, type);
-		    	  else if(plot=='histogram') plotHistogram(data, type);
+		    	  if(plot=='cloud') plotCloud(data, dataSource, type);
+		    	  else if(plot=='histogram') plotHistogram(data, dataSource, type);
 		      }
 		});
 		
@@ -92,45 +103,89 @@
 		return array[3] * Math.log10(1 + array[4]);
 	}
 	
-	var plotCloud = function(data, type) {
-		var parsedData= [];
-  		
-		if(type=='avg') {//use Gerasimos metric
-			for(var i=0; i<data.length; i++) {
-				parsedData.push({text:data[i][1], weight:calculateMetric(data[i])})
-			 }
-		}else {
-		  for(var i=0; i<data.length; i++) {
-			parsedData.push({text:data[i][1], weight:data[i][2]})
-		  }
-		}
-		  $('#graph div').empty().removeAttr( 'style' );
-	      $('#graph div').jQCloud(parsedData, {
-			  width: 500,
-			  height: 350
-		  });
+	//IDF
+	var calculateTFIDF = function(array) {
+		return array[4] * array[9];
 	}
 	
-	var plotHistogram = function(data, type) {
+	var plotCloud = function(data, dataSource, type) {
+		var parsedData= [];
+  		
+		if(dataSource == 'labels') {
+			if(type=='avg') {//use Gerasimos metric
+				for(var i=0; i<data.length; i++) {
+					parsedData.push({text:data[i][1], weight:calculateMetric(data[i])})
+				}
+			} else {
+				for(var i=0; i<data.length; i++) {
+					parsedData.push({text:data[i][1], weight:data[i][2]})
+				}
+			}
+		}
+		else if(dataSource == 'ocr') {
+			if(type=='tfidf') {
+				for(var i=0; i<data.length; i++) {
+					parsedData.push({text:data[i][6], weight:calculateTFIDF(data[i])})
+				}
+			} else {
+				for(var i=0; i<data.length; i++) {
+					parsedData.push({text:data[i][6], weight:data[i][4]})
+				}
+			}
+		}
+		
+		$('#graph div').empty().removeAttr( 'style' );
+	    $('#graph div').jQCloud(parsedData, {
+		  width: 500,
+		  height: 350
+	    });
+	}
+	
+	var plotHistogram = function(data, dataSource, type) {
 		var x = [];
 		var y = [];
 		
-		
-		if(type=='avg') {
-			for(var i=0; i<data.length; i++) {
-				data[i].push(calculateMetric(data[i]))
+
+		if (dataSource == 'labels') {
+			if (type == 'avg') {
+				for (var i = 0; i < data.length; i++) {
+					data[i].push(calculateMetric(data[i]))
+				}
+
+				data.sort(function(a, b) {
+					return b[5] - a[5]
+				});
+
+				for (var i = 0; i < data.length; i++) {
+					x.push(data[i][1]);
+					y.push(data[i][5]);
+				}
+			} else {
+				for (var i = 0; i < data.length; i++) {
+					x.push(data[i][1]);
+					y.push(data[i][2]);
+				}
 			}
-			
-			data.sort(function(a, b){return b[5] - a[5]});
-			
-			for(var i=0; i<data.length; i++) {
-				x.push(data[i][1]);
-				y.push(data[i][5]);
-			}
-		}else {
-			for(var i=0; i<data.length; i++) {
-				x.push(data[i][1]);
-				y.push(data[i][2]);
+		}
+		else if(dataSource == 'ocr') {
+			if(type=='tfidf') {
+				for (var i = 0; i < data.length; i++) {
+					data[i].push(calculateTFIDF(data[i]))
+				}
+
+				data.sort(function(a, b) {
+					return b[10] - a[10]
+				});
+				
+				for (var i = 0; i < data.length; i++) {
+					x.push(data[i][6]);
+					y.push(data[i][10]);
+				}
+			} else {
+				for (var i = 0; i < data.length; i++) {
+					x.push(data[i][6]);
+					y.push(data[i][4]);
+				}
 			}
 		}
 		
@@ -155,6 +210,14 @@
 		userDropdown.chosen();
 	}
 	
+	var addData = function() {
+		var dataDropdown = $("#st-data-dropdown");
+		dataDropdown.append($("<option />"));
+		dataDropdown.append($("<option />").val("labels").text("Labels"));
+		dataDropdown.append($("<option />").val("ocr").text("OCR"));
+		dataDropdown.chosen();
+	}
+	
 	var addPlots = function() {
 		var typeDropdown = $("#st-plot-dropdown");
 		typeDropdown.append($("<option />"));
@@ -163,11 +226,20 @@
 		typeDropdown.chosen();
 	}
 	
-	var addTypes = function() {
+	var addTypes = function(dataSource) {
 		var typeDropdown = $("#st-type-dropdown");
+		typeDropdown.empty();
 		typeDropdown.append($("<option />"));
-		typeDropdown.append($("<option />").val("count").text("Count"));
-		typeDropdown.append($("<option />").val("avg").text("Average"));
+		
+		if(dataSource == 'labels') {
+			typeDropdown.append($("<option />").val("count").text("Count"));
+			typeDropdown.append($("<option />").val("avg").text("Average"));
+		} else if(dataSource == 'ocr') {
+			typeDropdown.append($("<option />").val("tf").text("TF"));
+			typeDropdown.append($("<option />").val("tfidf").text("TFIDF"));
+		}
+		
+		typeDropdown.trigger("chosen:updated");
 		typeDropdown.chosen();
 	}
 	
