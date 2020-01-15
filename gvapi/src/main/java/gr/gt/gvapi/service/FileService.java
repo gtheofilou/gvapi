@@ -139,6 +139,56 @@ public class FileService extends AbstractService<File, Long> {
         return filesDownloaded;
     }
 
+    public List<File> downloadFiles(List<String> urls, String userName) {
+        String filename;
+        List<Pair<String, String>> urlsToProcess = new ArrayList<Pair<String, String>>();
+        List<File> filesDownloaded = new ArrayList<File>();
+
+        User user = userDao.findUserByName(userName);
+
+        if (StringUtils.isEmpty(urls))
+            return Collections.emptyList();
+
+        // urlsArr = urls.split("[\\r\\n]+");
+
+        String tmp;
+        for (String u : urls) {
+            if (StringUtils.isEmpty(u))
+                continue;
+
+            tmp = u.trim();
+            filename = FilenameUtils.getName(tmp);
+            File file = fileDao.findFileNByName(filename);
+            if (file == null)
+                urlsToProcess.add(new ImmutablePair<String, String>(tmp, filename));
+            else {// File already exist, just add association
+                System.out.println("File already exist, just add association");
+                fileUserAsscoDao.createFileUserAssocIfNotExists(file.getId(), user.getId());
+            }
+        }
+
+        int counter = 0;
+        for (Pair<String, String> p : urlsToProcess) {
+            try {
+                System.out.println(Thread.currentThread().getName() + "-Downloading -->" + ++counter
+                        + " / " + urlsToProcess.size());
+                download(p);
+
+                File file = new File();
+                file.setName(p.getRight());
+                persist(file);
+
+                filesDownloaded.add(file);
+                fileUserAsscoDao.createFileUserAssocIfNotExists(file.getId(), user.getId());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return filesDownloaded;
+    }
+
     private void download(Pair<String, String> pair) throws MalformedURLException, IOException {
         URLConnection c = new URL(pair.getLeft()).openConnection();
         c.setConnectTimeout(10000);
@@ -182,5 +232,9 @@ public class FileService extends AbstractService<File, Long> {
 
     public List<File> getFileList() {
         return fileDao.getFileList();
+    }
+
+    public List<File> getFileListNotSent() {
+        return fileDao.getFileListNotSent();
     }
 }

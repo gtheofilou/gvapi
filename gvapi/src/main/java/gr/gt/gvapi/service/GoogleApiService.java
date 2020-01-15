@@ -25,8 +25,11 @@ public class GoogleApiService {
         List<File> fileList = new ArrayList<File>();
 
         File f;
+        int counter = 0;
         for (Long id : googleApiDto.getIdList()) {
             try {
+                System.out.println(Thread.currentThread().getName() + "-->" + ++counter + " / "
+                        + googleApiDto.getIdList().size());
                 f = googleApiServiceHelper.sendToGoogle(id);
                 fileList.add(f);
             } catch (Exception e) {

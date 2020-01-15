@@ -182,6 +182,11 @@
 					y.push(data[i][10]);
 				}
 			} else {
+				
+				data.sort(function(a, b) {
+					return b[4] - a[4]
+				});
+				
 				for (var i = 0; i < data.length; i++) {
 					x.push(data[i][6]);
 					y.push(data[i][4]);
@@ -189,7 +194,7 @@
 			}
 		}
 		
-		var data = [
+		var dataPlot = [
 			  {
 			    x: x,
 			    y: y,
@@ -198,7 +203,7 @@
 			];
 
 		$('#graph div').empty().removeAttr( 'style' );;
-		Plotly.newPlot($('#graph div')[0], data);
+		Plotly.newPlot($('#graph div')[0], dataPlot);
 	}
 	
 	var loadUsers = function(data) {

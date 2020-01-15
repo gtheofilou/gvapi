@@ -11,14 +11,13 @@ import gr.gt.gvapi.entity.File_;
 @Repository("FileDao")
 public class FileDao extends AbstractDao<File, Long> {
 
-    @SuppressWarnings("unused")
     public List<File> getFileList() {
 
         CriteriaBuilder c = entityManager.getCriteriaBuilder();
         CriteriaQuery<File> q = c.createQuery(File.class);
         Root<File> r = q.from(File.class);
 
-        return entityManager.createQuery(q).getResultList();
+        return entityManager.createQuery(q).setMaxResults(500).getResultList();
     }
 
     public File findFileNByName(String name) {
@@ -30,6 +29,19 @@ public class FileDao extends AbstractDao<File, Long> {
         q.where(c.equal(r.get(File_.NAME), name));
         return getSingleOptional(entityManager.createQuery(q));
     }
+
+    public List<File> getFileListNotSent() {
+
+        CriteriaBuilder c = entityManager.getCriteriaBuilder();
+        CriteriaQuery<File> q = c.createQuery(File.class);
+        Root<File> r = q.from(File.class);
+
+        q.where(c.isNull(r.get(File_.SENT)));
+
+        // return entityManager.createQuery(q).setMaxResults(100).getResultList();
+        return entityManager.createQuery(q).getResultList();
+    }
+
 
 
 }

@@ -69,7 +69,7 @@ public class GoogleApiServiceHelper {
         googleResponseOcr.setScore(0F);
         googleResponseOcr.setType(GoogleResponse.Type.OCR);
 
-        System.out.println("Calling Google");
+        // System.out.println("Calling Google");
 
         for (GoogleResponse g : googleResponseLabelList) {
             googleResponseDao.persist(g);
