@@ -23,6 +23,7 @@ import gr.gt.gvapi.service.FileService;
 import gr.gt.gvapi.service.GoogleApiService;
 import gr.gt.gvapi.service.TweetService;
 import gr.gt.gvapi.service.UserService;
+import gr.gt.gvapi.service.W2VService;
 import gr.gt.gvapi.utils.ThematicCategories;
 
 @RestController
@@ -43,6 +44,17 @@ public class AdminController {
 
     @Autowired
     private GoogleApiService googleApiService;
+
+    @Autowired
+    private W2VService w2vService;
+
+    // word2vec with labels
+    @GetMapping(value = "/w2v-labels", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> w2vLabels() {
+
+        w2vService.run();
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping(value = "/couchdb", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> couchdb() {

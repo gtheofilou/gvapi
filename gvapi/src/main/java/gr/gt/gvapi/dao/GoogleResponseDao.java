@@ -25,6 +25,18 @@ public class GoogleResponseDao extends AbstractDao<GoogleResponse, Long> {
         return entityManager.createQuery(q).getResultList();
     }
 
+    public List<String> getDistinctLabels() {
+
+        CriteriaBuilder c = entityManager.getCriteriaBuilder();
+        CriteriaQuery<String> q = c.createQuery(String.class);
+        Root<GoogleResponse> r = q.from(GoogleResponse.class);
+
+        q.select(r.get(GoogleResponse_.DESCRIPTION));
+        q.where(c.equal(r.get(GoogleResponse_.TYPE), 0)).distinct(true);
+
+        return entityManager.createQuery(q).getResultList();
+    }
+
 
     public List<GoogleResponse> getOCR() {
 
