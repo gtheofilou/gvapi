@@ -11,6 +11,7 @@ import gr.gt.gvapi.entity.File_;
 @Repository("FileDao")
 public class FileDao extends AbstractDao<File, Long> {
 
+    @SuppressWarnings("unused")
     public List<File> getFileList() {
 
         CriteriaBuilder c = entityManager.getCriteriaBuilder();

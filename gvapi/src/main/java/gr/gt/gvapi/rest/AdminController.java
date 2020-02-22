@@ -3,17 +3,14 @@ package gr.gt.gvapi.rest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.google.common.collect.Lists;
 import gr.gt.gvapi.dto.GoogleApiDto;
 import gr.gt.gvapi.dto.UserDto;
 import gr.gt.gvapi.entity.CouchDBEntity;
@@ -50,9 +47,10 @@ public class AdminController {
 
     // word2vec with labels
     @GetMapping(value = "/w2v-labels", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> w2vLabels() {
+    public ResponseEntity<?> w2vLabels(@RequestParam Integer clusters,
+            @RequestParam Integer iterations) {
 
-        w2vService.run();
+        w2vService.run(clusters, iterations);
         return ResponseEntity.ok().build();
     }
 
@@ -83,7 +81,7 @@ public class AdminController {
     @GetMapping(value = "/handleFilesGoogle", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> handleFilesGoogle() {
 
-        int thread_num = 20;
+        // int thread_num = 20;
 
         List<String> skipList = new ArrayList<String>();
         skipList.add("avramopoulos");

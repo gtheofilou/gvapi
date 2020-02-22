@@ -11,6 +11,7 @@ import gr.gt.gvapi.dao.FileUserAssocDao;
 @Transactional
 public class FileUserAssocService {
 
+    @SuppressWarnings("unused")
     @Autowired
     private FileUserAssocDao fileUserAssocDao;
 }
