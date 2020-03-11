@@ -33,6 +33,8 @@ public class GoogleResponse {
     @NotNull
     private Float score;
 
+    private Double cosineSim;
+
     public GoogleResponse() {}
 
     public GoogleResponse(@NotNull Long fileId, @NotNull Type type, @NotNull String description,
@@ -82,6 +84,14 @@ public class GoogleResponse {
 
     public void setScore(Float score) {
         this.score = score;
+    }
+
+    public Double getCosineSim() {
+        return cosineSim;
+    }
+
+    public void setCosineSim(Double cosineSim) {
+        this.cosineSim = cosineSim;
     }
 
 }

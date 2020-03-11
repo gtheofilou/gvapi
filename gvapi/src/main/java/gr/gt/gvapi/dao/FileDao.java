@@ -43,6 +43,14 @@ public class FileDao extends AbstractDao<File, Long> {
         return entityManager.createQuery(q).getResultList();
     }
 
+    public List<Long> getFileIDs() {
+        CriteriaBuilder c = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> q = c.createQuery(Long.class);
+        Root<File> r = q.from(File.class);
 
+        q.select(r.get(File_.ID));
+
+        return entityManager.createQuery(q).getResultList();
+    }
 
 }

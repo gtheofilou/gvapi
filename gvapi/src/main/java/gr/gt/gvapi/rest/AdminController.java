@@ -54,6 +54,20 @@ public class AdminController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping(value = "/w2v-ocr-labels-sim", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> w2vOCRLabelsSimilarity() {
+
+        w2vService.w2vOCRLabelsSimilarity();
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "/w2v-ocr-tweets-sim", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> w2vOCRTweetsSimilarity() {
+
+        w2vService.w2vOCRTweetsSimilarity();
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping(value = "/couchdb", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> couchdb() {
 
@@ -116,44 +130,35 @@ public class AdminController {
             googleApiService.sendListToGoogle(ga);
         }
 
-        // String name = "4newsgr";
-        // String name = "actorbrianwhite";
-        // CouchDBEntity ce = couchDBService.find(name);
-        //
-        // List<File> fileList = new ArrayList<>();
-        // fileList = fileService.downloadFiles(ce.getMedia_list(), name);
-        // List<Long> fileIds = fileList.stream().map(File::getId).collect(Collectors.toList());
-        // GoogleApiDto ga = new GoogleApiDto();
-        // ga.setIdList(fileIds);
-        // googleApiService.sendListToGoogle(ga);
-
-        // ---------------------------------------------------------------
-        // ExecutorService executorService = Executors.newFixedThreadPool(thread_num);
-        // List<List<String>> chunksList = Lists.partition(ce.getMedia_list(), thread_num);
-        // System.out.println("List size: " + ce.getMedia_list().size());
-        //
-        // for (int i = 0; i < thread_num; i++) {
-        // int jj = i;
-        // executorService.submit(() -> {
-        // System.out.println("Chunk size" + chunksList.get(jj).size());
-        // List<File> fileList = new ArrayList<>();
-        // fileList = fileService.downloadFiles(chunksList.get(jj), name);
-        //
-        // List<Long> fileIds =
-        // fileList.stream().map(File::getId).collect(Collectors.toList());
-        // GoogleApiDto ga = new GoogleApiDto();
-        // ga.setIdList(fileIds);
-        // googleApiService.sendListToGoogle(ga);
-        // });
-        // }
-        // ---------------------------------------------------------------
-
         System.out.println("Saving Tweets");
         // tweetService.saveTweet(ce.getTweet_list(), name);
 
-        // List<Long> fileIds = fileService.getFileListNotSent().stream().map(File::getId)
-        // .collect(Collectors.toList());
+        return ResponseEntity.ok().build();
+    }
 
+    @GetMapping(value = "/saveTweets", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> saveTweets() {
+
+        Map<String, List<String>> usersMap = ThematicCategories.getCategoriesMap();
+
+        for (String name : usersMap.keySet()) {
+
+
+            List<String> categories = usersMap.get(name);
+
+            // run only politics
+            if (!categories.contains("Politics"))
+                continue;
+
+            System.out.println("::-------------------------------");
+            System.out.println("RUNNING " + name);
+            System.out.println("::-------------------------------");
+
+            CouchDBEntity ce = couchDBService.find(name);
+
+            System.out.println("Saving Tweets");
+            tweetService.saveTweet(ce.getTweet_list(), name);
+        }
 
         return ResponseEntity.ok().build();
     }

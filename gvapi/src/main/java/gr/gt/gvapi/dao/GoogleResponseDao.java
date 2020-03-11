@@ -49,4 +49,16 @@ public class GoogleResponseDao extends AbstractDao<GoogleResponse, Long> {
         return entityManager.createQuery(q).getResultList();
     }
 
+    public GoogleResponse getFileOCR(Long fileId) {
+
+        CriteriaBuilder c = entityManager.getCriteriaBuilder();
+        CriteriaQuery<GoogleResponse> q = c.createQuery(GoogleResponse.class);
+        Root<GoogleResponse> r = q.from(GoogleResponse.class);
+
+        q.where(c.and(c.equal(r.get(GoogleResponse_.FILE_ID), fileId),
+                c.equal(r.get(GoogleResponse_.TYPE), 1)));
+
+        return getSingleOptional(entityManager.createQuery(q));
+    }
+
 }

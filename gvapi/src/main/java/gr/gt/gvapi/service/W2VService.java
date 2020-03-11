@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.transaction.Transactional;
 import org.deeplearning4j.clustering.algorithm.Distance;
 import org.deeplearning4j.clustering.cluster.Cluster;
@@ -21,14 +23,22 @@ import org.nd4j.linalg.ops.transforms.Transforms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
+import org.springframework.util.StringUtils;
 import com.google.common.base.Splitter;
 import gr.gt.gvapi.dao.ClusterConfDao;
 import gr.gt.gvapi.dao.ClusterDao;
 import gr.gt.gvapi.dao.ClusterResultDao;
+import gr.gt.gvapi.dao.FileDao;
+import gr.gt.gvapi.dao.FileUserAssocDao;
 import gr.gt.gvapi.dao.GoogleResponseDao;
+import gr.gt.gvapi.dao.TweetDao;
 import gr.gt.gvapi.entity.ClusterConf;
 import gr.gt.gvapi.entity.ClusterId;
 import gr.gt.gvapi.entity.ClusterResult;
+import gr.gt.gvapi.entity.FileUserAssoc;
+import gr.gt.gvapi.entity.GoogleResponse;
+import gr.gt.gvapi.entity.GoogleResponse.Type;
+import gr.gt.gvapi.entity.Tweet;
 
 @Service
 @Transactional
@@ -42,6 +52,12 @@ public class W2VService {
     private ClusterConfDao clusterConfDao;
     @Autowired
     private ClusterResultDao clusterResultDao;
+    @Autowired
+    private FileDao fileDao;
+    @Autowired
+    private FileUserAssocDao fileUserAssocDao;
+    @Autowired
+    private TweetDao tweetDao;
 
     private static Word2Vec model = null;
 
@@ -85,7 +101,7 @@ public class W2VService {
          * Clustering
          */
         KMeansClustering kmeans =
-                KMeansClustering.setup(clusters, iterations, Distance.COSINE_SIMILARITY);
+                KMeansClustering.setup(clusters, iterations, Distance.COSINE_SIMILARITY, false);
 
         // Fetch labels
         List<String> labelsList = googleResponseDao.getDistinctLabels();
@@ -139,9 +155,9 @@ public class W2VService {
         }
 
         for (String word : labelsList) {
-            INDArray indArray = word2Vec.getWordVectorMatrix(word);
-            vectors.add(indArray);
-            vectorsMap.put(word, indArray);
+            // INDArray indArray = word2Vec.getWordVectorMatrix(word);
+            // vectors.add(indArray);
+            // vectorsMap.put(word, indArray);
 
             Point p = new Point(word, word, vectorsMap.get(word));
             PointClassification pc = cs.classifyPoint(p);
@@ -181,17 +197,93 @@ public class W2VService {
         System.out.println(sw.prettyPrint());
     }
 
+    public void w2vOCRLabelsSimilarity() {
+
+        Word2Vec word2Vec = getWord2VecModel();
+
+        List<Long> fileIDList = fileDao.getFileIDs();
+        int size = fileIDList.size();
+        System.out.println("fileIDList: " + size);
+        int cnt = 0;
+        for (Long fileID : fileIDList) {
+            cnt++;
+            System.out.println("Iteration: " + cnt + "/" + size);
+            List<GoogleResponse> gList = googleResponseDao.getGoogleResponse(fileID);
+
+            GoogleResponse ocr = null;
+            for (GoogleResponse g : gList) {
+                if (g.getType() == Type.OCR) {
+                    ocr = g;
+                    break;
+                }
+            }
+
+            if (ocr == null || StringUtils.isEmpty(ocr.getDescription()))
+                continue;
+
+            gList.remove(ocr);
+
+            for (GoogleResponse g : gList) {
+                double sim =
+                        cosineSimForSentence(word2Vec, ocr.getDescription(), g.getDescription());
+                g.setCosineSim(sim);
+            }
+        }
+    }
+
     private static double cosineSimForSentence(Word2Vec word2Vec, String s1, String s2) {
         Collection<String> label1 = Splitter.on(' ').splitToList(s1);
         Collection<String> label2 = Splitter.on(' ').splitToList(s2);
+        try {
 
-        double r = Transforms.cosineSim(word2Vec.getWordVectorsMean(label1),
-                word2Vec.getWordVectorsMean(label2));
+            double r = Transforms.cosineSim(word2Vec.getWordVectorsMean(label1),
+                    word2Vec.getWordVectorsMean(label2));
+            return r;
+        } catch (Exception e) {
+            return -2;
+        }
+    }
 
-        System.out.println("Similarity Score between: " + s1 + " --vs-- " + s2 + ":==>" + r);
+    public void w2vOCRTweetsSimilarity() {
+        Word2Vec word2Vec = getWord2VecModel();
 
-        return r;
+        Set<Long> usersProcessed = new HashSet<Long>();
 
+        List<Long> fileIDList = fileDao.getFileIDs();
+        int size = fileIDList.size();
+        System.out.println("fileIDList: " + size);
+        int cnt = 0;
+        for (Long fileID : fileIDList) {
+            cnt++;
+
+            GoogleResponse ocr = googleResponseDao.getFileOCR(fileID);
+            if (ocr == null || StringUtils.isEmpty(ocr.getDescription()))
+                continue;
+
+            List<FileUserAssoc> fuaList = fileUserAssocDao.getUserID(fileID);
+            if (fuaList == null || fuaList.isEmpty())
+                continue;
+            System.out.println("Iteration: " + cnt + "/" + size + " fileid: " + fileID + " users: "
+                    + fuaList.size());
+
+            for (FileUserAssoc fua : fuaList) {
+
+                if (usersProcessed.contains(fua.getUserId()))
+                    continue;
+                else
+                    usersProcessed.add(fua.getUserId());
+
+                List<Tweet> tweetList = tweetDao.getUserTweets(fua.getUserId());
+                if (tweetList == null || tweetList.isEmpty())
+                    continue;
+
+                for (Tweet t : tweetList) {
+                    double sim = cosineSimForSentence(word2Vec, ocr.getDescription(), t.getText());
+                    t.setCosineSim(sim);
+                }
+            }
+
+        }
     }
 
 }

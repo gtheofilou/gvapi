@@ -27,6 +27,8 @@ public class TweetService extends AbstractService<Tweet, Long> {
     }
 
     public void saveTweet(List<String> textList, String userName) {
+        if (textList == null || textList.isEmpty())
+            return;
         User user = userDao.findUserByName(userName);
         for (String text : textList) {
             Tweet t = new Tweet();

@@ -20,6 +20,8 @@ public class Tweet {
     @NotNull
     private String text;
 
+    private Double cosineSim;
+
     public Long getId() {
         return id;
     }
@@ -42,6 +44,14 @@ public class Tweet {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public Double getCosineSim() {
+        return cosineSim;
+    }
+
+    public void setCosineSim(Double cosineSim) {
+        this.cosineSim = cosineSim;
     }
 
 }
