@@ -45,6 +45,20 @@ public class AdminController {
     @Autowired
     private W2VService w2vService;
 
+    @GetMapping(value = "/setParty", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> setParty() {
+
+        userService.setParty();
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "/saveFinalDescription", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> saveFinalDescription() {
+
+        googleApiService.saveFinalDescription();
+        return ResponseEntity.ok().build();
+    }
+
     // word2vec with labels
     @GetMapping(value = "/w2v-labels", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> w2vLabels(@RequestParam Integer clusters,

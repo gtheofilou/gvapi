@@ -87,7 +87,7 @@
 	var plot = function(user, dataSource, plot, type) {
 		$.ajax({
 		      type: 'GET',
-		      data:{user: user, dataSource: dataSource, type: type, limit: 100},
+		      data:{user: user, dataSource: dataSource, type: type, limit: 50},
 		      url: "/statistics/mostRecentPerUser",
 		      success: function(data) {
 		    	  console.log(data);
@@ -188,7 +188,7 @@
 				});
 				
 				for (var i = 0; i < data.length; i++) {
-					x.push(data[i][6]);
+					x.push(data[i][0]);
 					y.push(data[i][4]);
 				}
 			}
@@ -209,6 +209,7 @@
 	var loadUsers = function(data) {
 		var userDropdown = $("#st-user-dropdown");
 		userDropdown.append($("<option />"));
+		userDropdown.append($("<option />").val("allusers").text("* All Users"));
 		$.each(data, function() {
 			userDropdown.append($("<option />").val(this.name).text(this.name));
 		});

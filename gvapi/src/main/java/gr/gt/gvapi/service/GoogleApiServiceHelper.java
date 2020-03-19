@@ -65,6 +65,12 @@ public class GoogleApiServiceHelper {
         GoogleResponse googleResponseOcr = new GoogleResponse();
         googleResponseOcr.setDescription(response.getTextAnnotationsList().stream()
                 .map(x -> x.getDescription()).collect(Collectors.joining("|")));
+        //
+        if (response.getTextAnnotationsList() != null
+                && !response.getTextAnnotationsList().isEmpty())
+            googleResponseOcr
+                    .setFinalDescription(response.getTextAnnotationsList().get(0).getDescription());
+
         googleResponseOcr.setFileId(id);
         googleResponseOcr.setScore(0F);
         googleResponseOcr.setType(GoogleResponse.Type.OCR);

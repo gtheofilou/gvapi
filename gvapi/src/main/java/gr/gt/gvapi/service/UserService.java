@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import gr.gt.gvapi.dao.UserDao;
 import gr.gt.gvapi.dto.UserDto;
 import gr.gt.gvapi.entity.User;
+import gr.gt.gvapi.utils.ThematicCategories;
 
 @Service
 @Transactional
@@ -27,6 +28,29 @@ public class UserService {
 
     public List<User> getUsers() {
         return userDao.getUsers();
+    }
+
+    public void setParty() {
+        List<User> usersList = getUsers();
+
+        for (User u : usersList) {
+            List<String> tags = ThematicCategories.getCategoriesMap().get(u.getName());
+
+            if (tags == null || !tags.contains("Politics"))
+                continue;
+
+            u.setCategory("Politics");
+
+            String party = null;
+            for (String tag : tags) {
+                if (User.parties.contains(tag)) {
+                    party = User.party(tag);
+                    break;
+                }
+            }
+            u.setParty(party);
+        }
+
     }
 
 }

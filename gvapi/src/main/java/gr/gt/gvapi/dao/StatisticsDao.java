@@ -14,14 +14,24 @@ public class StatisticsDao extends AbstractDao<Long, Long> {
         // Labels
         if ("labels".equals(dataSource)) {
 
-            if ("count".equals(type))
-                query = entityManager.createNativeQuery(Statistics.LABELS_BY_COUNT_PER_USER);
-            else if ("avg".equals(type))
-                query = entityManager.createNativeQuery(Statistics.LABELS_BY_AVG_PER_USER);
-            else
-                return Collections.emptyList();
+            if ("allusers".equals(user)) {
+                if ("count".equals(type))
+                    query = entityManager.createNativeQuery(Statistics.LABELS_BY_COUNT_ALL_USERS);
+                else if ("avg".equals(type))
+                    query = entityManager.createNativeQuery(Statistics.LABELS_BY_AVG_ALL_USERS);
+                else
+                    return Collections.emptyList();
+            } else {
+                if ("count".equals(type))
+                    query = entityManager.createNativeQuery(Statistics.LABELS_BY_COUNT_PER_USER);
+                else if ("avg".equals(type))
+                    query = entityManager.createNativeQuery(Statistics.LABELS_BY_AVG_PER_USER);
+                else
+                    return Collections.emptyList();
 
-            query.setParameter("user", user);
+                query.setParameter("user", user);
+            }
+
             query.setParameter("limit", limit);
 
             return query.getResultList();
@@ -29,14 +39,24 @@ public class StatisticsDao extends AbstractDao<Long, Long> {
         } // OCR
         else if ("ocr".equals(dataSource)) {
 
-            if ("tf".equals(type))
-                query = entityManager.createNativeQuery(Statistics.OCR_TF);
-            else if ("tfidf".equals(type))
-                query = entityManager.createNativeQuery(Statistics.OCR_TFIDF);
-            else
-                return Collections.emptyList();
+            if ("allusers".equals(user)) {
+                if ("tf".equals(type))
+                    query = entityManager.createNativeQuery(Statistics.OCR_TF2_ALL_USERS);
+                else if ("tfidf".equals(type))
+                    query = entityManager.createNativeQuery(Statistics.OCR_TFIDF2_ALL_USERS);
+                else
+                    return Collections.emptyList();
 
-            query.setParameter("user", user);
+            } else {
+                if ("tf".equals(type))
+                    query = entityManager.createNativeQuery(Statistics.OCR_TF2);
+                else if ("tfidf".equals(type))
+                    query = entityManager.createNativeQuery(Statistics.OCR_TFIDF2);
+                else
+                    return Collections.emptyList();
+
+                query.setParameter("user", user);
+            }
             query.setParameter("limit", limit);
 
             return query.getResultList();

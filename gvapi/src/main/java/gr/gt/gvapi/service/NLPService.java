@@ -42,14 +42,16 @@ public class NLPService {
         System.out.println(gList.size());
         int index = 0;
         for (GoogleResponse g : gList) {
-            System.out.println(++index);
-            nlp(pipeline, g);
+            System.out.println(++index + "/" + gList.size());
+            nlpDao.nlp(pipeline, g);
         }
         System.out.println("finished");
 
 
     }
 
+    // transfered to DAO
+    @SuppressWarnings("unused")
     private void nlp(StanfordCoreNLP pipeline, GoogleResponse g) {
 
         // per document

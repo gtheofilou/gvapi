@@ -30,6 +30,9 @@ public class GoogleResponse {
     @Column(length = 10000)
     private String description;
 
+    @Column(length = 10000)
+    private String finalDescription;
+
     @NotNull
     private Float score;
 
@@ -76,6 +79,14 @@ public class GoogleResponse {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getFinalDescription() {
+        return finalDescription;
+    }
+
+    public void setFinalDescription(String finalDescription) {
+        this.finalDescription = finalDescription;
     }
 
     public Float getScore() {

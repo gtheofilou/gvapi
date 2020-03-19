@@ -42,4 +42,14 @@ public class GoogleApiService {
     public List<GoogleResponse> getGoogleResponse(Long fileId) {
         return googleResponseDao.getGoogleResponse(fileId);
     }
+
+    public void saveFinalDescription() {
+        List<Long> list = googleResponseDao.getIDList();
+        for (Long l : list) {
+            googleResponseDao.saveFinalDescription(l);
+        }
+
+    }
+
+
 }
