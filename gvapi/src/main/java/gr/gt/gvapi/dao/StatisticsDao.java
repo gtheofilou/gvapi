@@ -21,6 +21,17 @@ public class StatisticsDao extends AbstractDao<Long, Long> {
                     query = entityManager.createNativeQuery(Statistics.LABELS_BY_AVG_ALL_USERS);
                 else
                     return Collections.emptyList();
+
+            } else if ("allpoliticsusers".equals(user)) {
+                if ("count".equals(type))
+                    query = entityManager
+                            .createNativeQuery(Statistics.LABELS_BY_COUNT_ALL_POLITICS_USERS);
+                else if ("avg".equals(type))
+                    query = entityManager
+                            .createNativeQuery(Statistics.LABELS_BY_AVG_ALL_POLITICS_USERS);
+                else
+                    return Collections.emptyList();
+
             } else {
                 if ("count".equals(type))
                     query = entityManager.createNativeQuery(Statistics.LABELS_BY_COUNT_PER_USER);
@@ -34,6 +45,7 @@ public class StatisticsDao extends AbstractDao<Long, Long> {
 
             query.setParameter("limit", limit);
 
+            query.setHint("javax.persistence.query.timeout", 60 * 1000);
             return query.getResultList();
 
         } // OCR
@@ -44,6 +56,15 @@ public class StatisticsDao extends AbstractDao<Long, Long> {
                     query = entityManager.createNativeQuery(Statistics.OCR_TF2_ALL_USERS);
                 else if ("tfidf".equals(type))
                     query = entityManager.createNativeQuery(Statistics.OCR_TFIDF2_ALL_USERS);
+                else
+                    return Collections.emptyList();
+
+            } else if ("allpoliticsusers".equals(user)) {
+                if ("tf".equals(type))
+                    query = entityManager.createNativeQuery(Statistics.OCR_TF2_ALL_POLITICS_USERS);
+                else if ("tfidf".equals(type))
+                    query = entityManager
+                            .createNativeQuery(Statistics.OCR_TFIDF2_ALL_POLITICS_USERS);
                 else
                     return Collections.emptyList();
 
@@ -59,6 +80,7 @@ public class StatisticsDao extends AbstractDao<Long, Long> {
             }
             query.setParameter("limit", limit);
 
+            // query.setHint("javax.persistence.query.timeout", 60 * 1000);
             return query.getResultList();
         } else
             return Collections.emptyList();

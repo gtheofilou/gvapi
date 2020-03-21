@@ -125,11 +125,12 @@
 		else if(dataSource == 'ocr') {
 			if(type=='tfidf') {
 				for(var i=0; i<data.length; i++) {
-					parsedData.push({text:data[i][6], weight:calculateTFIDF(data[i])})
+//					parsedData.push({text:data[i][6], weight:calculateTFIDF(data[i])})
+					parsedData.push({text:data[i][6], weight:data[i][9]})
 				}
 			} else {
 				for(var i=0; i<data.length; i++) {
-					parsedData.push({text:data[i][6], weight:data[i][4]})
+					parsedData.push({text:data[i][0], weight:data[i][4]})
 				}
 			}
 		}
@@ -210,6 +211,7 @@
 		var userDropdown = $("#st-user-dropdown");
 		userDropdown.append($("<option />"));
 		userDropdown.append($("<option />").val("allusers").text("* All Users"));
+		userDropdown.append($("<option />").val("allpoliticsusers").text("* All Politics Users"));
 		$.each(data, function() {
 			userDropdown.append($("<option />").val(this.name).text(this.name));
 		});

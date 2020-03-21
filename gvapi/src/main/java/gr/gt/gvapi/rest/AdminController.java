@@ -45,6 +45,13 @@ public class AdminController {
     @Autowired
     private W2VService w2vService;
 
+    @GetMapping(value = "/setTags", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> setTags() {
+
+        userService.setTags();
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping(value = "/setParty", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> setParty() {
 

@@ -200,6 +200,11 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+        			<jvmArguments>
+            			-Xmx4048m
+        			</jvmArguments>
+   				 </configuration>
 			</plugin>
 			<plugin>
                 <groupId>org.codehaus.mojo</groupId>
