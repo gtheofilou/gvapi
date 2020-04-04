@@ -3,8 +3,11 @@ package gr.gt.gvapi.entity;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.Index;
+import javax.persistence.Table;
 
 @Entity
+@Table(indexes = @Index(columnList = "userId"))
 @IdClass(FileUserAssocId.class)
 public class FileUserAssoc {
 

@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "NLP", indexes = @Index(columnList = "word"))
+@Table(name = "NLP", indexes = {@Index(columnList = "word"), @Index(columnList = "fileId")})
 public class NLP {
 
     @Id

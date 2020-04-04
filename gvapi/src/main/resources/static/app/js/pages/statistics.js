@@ -114,7 +114,8 @@
 		if(dataSource == 'labels') {
 			if(type=='avg') {//use Gerasimos metric
 				for(var i=0; i<data.length; i++) {
-					parsedData.push({text:data[i][1], weight:calculateMetric(data[i])})
+//					parsedData.push({text:data[i][1], weight:calculateMetric(data[i])})
+					parsedData.push({text:data[i][1], weight:data[i][5]})
 				}
 			} else {
 				for(var i=0; i<data.length; i++) {
@@ -149,9 +150,9 @@
 
 		if (dataSource == 'labels') {
 			if (type == 'avg') {
-				for (var i = 0; i < data.length; i++) {
-					data[i].push(calculateMetric(data[i]))
-				}
+//				for (var i = 0; i < data.length; i++) {
+//					data[i].push(calculateMetric(data[i]))
+//				}
 
 				data.sort(function(a, b) {
 					return b[5] - a[5]

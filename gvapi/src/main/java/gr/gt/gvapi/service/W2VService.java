@@ -223,11 +223,12 @@ public class W2VService {
 
             gList.remove(ocr);
 
-            for (GoogleResponse g : gList) {
-                double sim =
-                        cosineSimForSentence(word2Vec, ocr.getDescription(), g.getDescription());
-                g.setCosineSim(sim);
-            }
+            googleResponseDao.saveCosineSim(gList, ocr.getFinalDescription(), word2Vec);
+            // for (GoogleResponse g : gList) {
+            // double sim =
+            // cosineSimForSentence(word2Vec, ocr.getDescription(), g.getDescription());
+            // g.setCosineSim(sim);
+            // }
         }
     }
 
