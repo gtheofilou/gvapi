@@ -160,6 +160,7 @@ public class Statistics {
             + "JOIN FILE_USER_ASSOC fua on fua.file_id= nlp.file_id "//
             + "JOIN USER u on u.id=fua.user_id "//
             + "WHERE u.name = :user "//
+            + "AND nlp.word NOT IN (SELECT word FROM STOP_WORD) "//
             + "ORDER by tf DESC, word "//
             + "LIMIT :limit";
     /**
@@ -184,6 +185,7 @@ public class Statistics {
             + "join TAGS_USER_ASSOC tua on tua.user_id = u.id "//
             + "join TAGS t on tua.tag_id = t.id "//
             + "WHERE t.name = 'Politics' "//
+            + "AND nlp.word NOT IN (SELECT word FROM STOP_WORD) "//
             + "ORDER by tf DESC, word "//
             + "LIMIT :limit";
     /**
@@ -202,6 +204,7 @@ public class Statistics {
             + "JOIN IDF idf ON nlp.word = idf.word "//
             + "JOIN FILE_USER_ASSOC fua on fua.file_id= nlp.file_id "//
             + "JOIN USER u on u.id=fua.user_id "//
+            + "WHERE nlp.word NOT IN (SELECT word FROM STOP_WORD) "//
             + "ORDER by tf DESC, word "//
             + "LIMIT :limit";
 
@@ -247,6 +250,7 @@ public class Statistics {
             + "JOIN FILE_USER_ASSOC fua on fua.file_id= nlp.file_id "//
             + "JOIN USER u on u.id=fua.user_id "//
             + "WHERE u.name = :user "//
+            + "AND nlp.word NOT IN (SELECT word FROM STOP_WORD) "//
             + "ORDER by ord DESC "//
             + "LIMIT :limit";
 
@@ -318,6 +322,7 @@ public class Statistics {
             "       JOIN FILE_USER_ASSOC fua on u.id = fua.user_id\n" + //
             "       JOIN NLP n ON fua.file_id = n.file_id\n" + //
             "       JOIN IDF idf ON n.word = idf.word\n" + //
+            "WHERE nlp.word NOT IN (SELECT word FROM STOP_WORD) " + //
             "ORDER BY\n" + //
             "    ord DESC\n" + //
             "LIMIT :limit";
@@ -340,6 +345,7 @@ public class Statistics {
             + "JOIN IDF idf ON nlp.word = idf.word "//
             + "JOIN FILE_USER_ASSOC fua on fua.file_id= nlp.file_id "//
             + "JOIN USER u on u.id=fua.user_id "//
+            + "WHERE nlp.word NOT IN (SELECT word FROM STOP_WORD) "//
             + "ORDER by ord DESC "//
             + "LIMIT :limit";
 
