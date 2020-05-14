@@ -56,6 +56,8 @@ public class StatisticsDao extends AbstractDao<Long, Long> {
                     query = entityManager.createNativeQuery(Statistics.OCR_TF2_ALL_USERS);
                 else if ("tfidf".equals(type))
                     query = entityManager.createNativeQuery(Statistics.OCR_TFIDF2_ALL_USERS);
+                else if ("gerasimos".equals(type))
+                    query = entityManager.createNativeQuery(Statistics.OCR_GERASIMOS_ALL_USERS);
                 else
                     return Collections.emptyList();
 
@@ -65,6 +67,9 @@ public class StatisticsDao extends AbstractDao<Long, Long> {
                 else if ("tfidf".equals(type))
                     query = entityManager
                             .createNativeQuery(Statistics.OCR_TFIDF2_ALL_POLITICS_USERS);
+                else if ("gerasimos".equals(type))
+                    query = entityManager
+                            .createNativeQuery(Statistics.OCR_GERASIMOS_ALL_POLITICS_USERS);
                 else
                     return Collections.emptyList();
 
@@ -73,6 +78,8 @@ public class StatisticsDao extends AbstractDao<Long, Long> {
                     query = entityManager.createNativeQuery(Statistics.OCR_TF2);
                 else if ("tfidf".equals(type))
                     query = entityManager.createNativeQuery(Statistics.OCR_TFIDF2);
+                else if ("gerasimos".equals(type))
+                    query = entityManager.createNativeQuery(Statistics.OCR_GERASIMOS);
                 else
                     return Collections.emptyList();
 

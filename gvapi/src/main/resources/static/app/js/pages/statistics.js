@@ -129,7 +129,13 @@
 //					parsedData.push({text:data[i][6], weight:calculateTFIDF(data[i])})
 					parsedData.push({text:data[i][6], weight:data[i][9]})
 				}
-			} else {
+			}
+			else if(type=='gerasimos') {
+				for(var i=0; i<data.length; i++) {
+					parsedData.push({text:data[i][0], weight:data[i][3]})
+				}
+			}
+			else {
 				for(var i=0; i<data.length; i++) {
 					parsedData.push({text:data[i][0], weight:data[i][4]})
 				}
@@ -171,17 +177,23 @@
 		}
 		else if(dataSource == 'ocr') {
 			if(type=='tfidf') {
-				for (var i = 0; i < data.length; i++) {
-					data[i].push(calculateTFIDF(data[i]))
-				}
+//				for (var i = 0; i < data.length; i++) {
+//					data[i].push(calculateTFIDF(data[i]))
+//				}
 
-				data.sort(function(a, b) {
-					return b[10] - a[10]
-				});
+//				data.sort(function(a, b) {
+//					return b[10] - a[10]
+//				});
 				
 				for (var i = 0; i < data.length; i++) {
 					x.push(data[i][6]);
-					y.push(data[i][10]);
+					y.push(data[i][9]);
+				}
+			} 
+			else if(type=='gerasimos') {
+				for (var i = 0; i < data.length; i++) {
+					x.push(data[i][0]);
+					y.push(data[i][3]);
 				}
 			} else {
 				
@@ -246,6 +258,7 @@
 		} else if(dataSource == 'ocr') {
 			typeDropdown.append($("<option />").val("tf").text("TF"));
 			typeDropdown.append($("<option />").val("tfidf").text("TFIDF"));
+			typeDropdown.append($("<option />").val("gerasimos").text("Gerasimos"));
 		}
 		
 		typeDropdown.trigger("chosen:updated");

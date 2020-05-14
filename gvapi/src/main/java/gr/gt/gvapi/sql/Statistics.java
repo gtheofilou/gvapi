@@ -349,4 +349,66 @@ public class Statistics {
             + "ORDER by ord DESC "//
             + "LIMIT :limit";
 
+    // GERASIMOS
+    public static final String OCR_GERASIMOS = ""//
+            + "WITH IDF AS ( "//
+            + "SELECT word, count(1) as count "//
+            + "FROM NLP "//
+            + "JOIN FILE_USER_ASSOC fua on fua.file_id= nlp.file_id "//
+            + "JOIN USER u on u.id=fua.user_id "//
+            + "WHERE u.name = :user "//
+            + "GROUP BY word "//
+            + ")"//
+            + "SELECT distinct nlp.word, idf.count, u.name, idf.count * LOG10(1+idf.count) AS metric "//
+            + "FROM NLP nlp "//
+            + "JOIN IDF idf ON nlp.word = idf.word "//
+            + "JOIN FILE_USER_ASSOC fua on fua.file_id= nlp.file_id "//
+            + "JOIN USER u on u.id=fua.user_id "//
+            + "WHERE u.name = :user "//
+            + "AND nlp.word NOT IN (SELECT word FROM STOP_WORD) "//
+            + "ORDER by metric DESC "//
+            + "LIMIT :limit";
+
+    // GERASIMOS
+    public static final String OCR_GERASIMOS_ALL_POLITICS_USERS = ""//
+            + "WITH IDF AS ( "//
+            + "SELECT word, count(1) as count "//
+            + "FROM NLP "//
+            + "JOIN FILE_USER_ASSOC fua on fua.file_id= nlp.file_id "//
+            + "JOIN USER u on u.id=fua.user_id "//
+            + "join TAGS_USER_ASSOC tua on tua.user_id = u.id "//
+            + "join TAGS t on tua.tag_id = t.id "//
+            + "WHERE t.name = 'Politics' "//
+            + "GROUP BY word "//
+            + ")"//
+            + "SELECT distinct nlp.word, idf.count, 'allpoliticsusers', idf.count * LOG10(1+idf.count) AS metric "//
+            + "FROM NLP nlp "//
+            + "JOIN IDF idf ON nlp.word = idf.word "//
+            + "JOIN FILE_USER_ASSOC fua on fua.file_id= nlp.file_id "//
+            + "JOIN USER u on u.id=fua.user_id "//
+            + "join TAGS_USER_ASSOC tua on tua.user_id = u.id "//
+            + "join TAGS t on tua.tag_id = t.id "//
+            + "WHERE t.name = 'Politics' "//
+            + "AND nlp.word NOT IN (SELECT word FROM STOP_WORD) "//
+            + "ORDER by metric DESC "//
+            + "LIMIT :limit";
+
+    // GERASIMOS
+    public static final String OCR_GERASIMOS_ALL_USERS = ""//
+            + "WITH IDF AS ( "//
+            + "SELECT word, count(1) as count "//
+            + "FROM NLP "//
+            + "JOIN FILE_USER_ASSOC fua on fua.file_id= nlp.file_id "//
+            + "JOIN USER u on u.id=fua.user_id "//
+            + "GROUP BY word "//
+            + ")"//
+            + "SELECT distinct nlp.word, idf.count, 'allpoliticsusers', idf.count * LOG10(1+idf.count) AS metric "//
+            + "FROM NLP nlp "//
+            + "JOIN IDF idf ON nlp.word = idf.word "//
+            + "JOIN FILE_USER_ASSOC fua on fua.file_id= nlp.file_id "//
+            + "JOIN USER u on u.id=fua.user_id "//
+            + "WHERE nlp.word NOT IN (SELECT word FROM STOP_WORD) "//
+            + "ORDER by metric DESC "//
+            + "LIMIT :limit";
+
 }
