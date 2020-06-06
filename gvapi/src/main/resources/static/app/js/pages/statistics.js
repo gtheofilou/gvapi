@@ -258,7 +258,7 @@
 		} else if(dataSource == 'ocr') {
 			typeDropdown.append($("<option />").val("tf").text("TF"));
 			typeDropdown.append($("<option />").val("tfidf").text("TFIDF"));
-			typeDropdown.append($("<option />").val("gerasimos").text("Gerasimos"));
+			typeDropdown.append($("<option />").val("gerasimos").text("Dominant Words"));
 		}
 		
 		typeDropdown.trigger("chosen:updated");

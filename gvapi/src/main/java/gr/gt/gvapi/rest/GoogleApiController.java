@@ -38,10 +38,9 @@ public class GoogleApiController {
 
     @GetMapping(value = "/get/{fileId:.+}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getGoogleResponse(@PathVariable Long fileId) {
-        return ResponseEntity.ok()
-                .body(googleApiService.getGoogleResponse(fileId).stream().map(
-                        x -> new GoogleResponseDto(x.getType(), x.getDescription(), x.getScore()))
-                        .collect(Collectors.groupingBy(GoogleResponseDto::getType)));
+        return ResponseEntity.ok().body(googleApiService.getGoogleResponse(fileId).stream()
+                .map(x -> new GoogleResponseDto(x.getType(), x.getFinalDescription(), x.getScore()))
+                .collect(Collectors.groupingBy(GoogleResponseDto::getType)));
     }
 
 }

@@ -210,12 +210,12 @@ public class FileService extends AbstractService<File, Long> {
         }
     }
 
-    public Resource loadFile(String fileName) {
+    public Resource loadFile(String fileName, Boolean original) {
         try {
             Path filePath = fileLocation.resolve(fileName).normalize();
             Path thumbPath = fileLocation.resolve("thumb/" + fileName).normalize();
             Resource resourceThumb = new UrlResource(thumbPath.toUri());
-            if (resourceThumb.exists())
+            if (!original && resourceThumb.exists())
                 return resourceThumb;
             else {
                 Resource resource = new UrlResource(filePath.toUri());

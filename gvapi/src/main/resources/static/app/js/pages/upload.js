@@ -334,6 +334,10 @@
 			var content = $("#gvModal .modal-body").empty();
 			var title = $("#gvModal .modal-title");
 			title.text('Google Response');
+			
+			var imageArea = $("<img>").addClass("mr-3 mb-2").css("width", "100%").attr("src", "/file/download/" + row.name + "?original=true");
+			content.append(imageArea);
+			
 			var tbl = $("<table>").addClass('display').css("width", "100%");
 			content.append(tbl);
 			

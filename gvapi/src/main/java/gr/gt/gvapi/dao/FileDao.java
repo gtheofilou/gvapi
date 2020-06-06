@@ -11,12 +11,13 @@ import gr.gt.gvapi.entity.File_;
 @Repository("FileDao")
 public class FileDao extends AbstractDao<File, Long> {
 
-    @SuppressWarnings("unused")
     public List<File> getFileList() {
 
         CriteriaBuilder c = entityManager.getCriteriaBuilder();
         CriteriaQuery<File> q = c.createQuery(File.class);
         Root<File> r = q.from(File.class);
+
+        q.orderBy(c.desc(r.get(File_.ID)));
 
         return entityManager.createQuery(q).setMaxResults(500).getResultList();
     }

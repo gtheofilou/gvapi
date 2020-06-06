@@ -43,8 +43,9 @@ public class FileController {
     }
 
     @GetMapping("/download/{fileName:.+}")
-    public ResponseEntity<?> downLoadFile(@PathVariable String fileName) {
-        Resource resource = fileService.loadFile(fileName);
+    public ResponseEntity<?> downLoadFile(@PathVariable String fileName,
+            @RequestParam(defaultValue = "false") Boolean original) {
+        Resource resource = fileService.loadFile(fileName, original);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
     }
 
